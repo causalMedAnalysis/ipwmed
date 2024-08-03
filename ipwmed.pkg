@@ -1,0 +1,16 @@
+d 'IPWMED': module to perform causal mediation analysis using inverse probability weighting
+d
+d  ipwmed performs causal mediation analysis using inverse probability weighting. Two models are 
+d estimated to construct the weights: a logit model for the exposure conditional on baseline covariates (if specified)
+d and another logit model for the exposure conditional on the mediator and the baseline covariates.
+d
+d Requires: Stata version 15
+d
+d Distribution-Date: 20240710
+d
+d Author: Geoff Wodtke, University of Chicago
+d Support: email wodtke@@uchicago.edu
+d
+f ipwmed.ado
+f ipwmedbs.ado
+f ipwmed.sthlp
