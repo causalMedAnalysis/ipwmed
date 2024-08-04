@@ -30,15 +30,29 @@ program define ipwmed, eclass
 		if r(N) == 0 error 2000
 	}
 	
+
 	foreach i in `dvar' `mvar' {
 		confirm variable `i'
-		qui sum `i'
-		if r(min) != 0 | r(max) != 1 {
-		display as error "{p 0 0 5 0} The variable `i' is not binary and coded 0/1"
-        error 198
+		qui levelsof `i', local(levels)
+		if "`levels'" != "0 1" & "`levels'" != "1 0" {
+			display as error "The variable `i' is not binary and coded 0/1"
+			error 198
 		}
 	}
 
+	/***REPORT MODELS AND SAVE WEIGHTS IF REQUESTED***/
+	if ("`detail'" != "") {
+		
+		ipwmedbs `varlist' if `touse', ///
+			dvar(`dvar') mvar(`mvar') cvars(`cvars') ///
+			d(`d') dstar(`dstar') m(`m') sampwts(`sampwts') `detail'
+	
+		label var sw1_r001 "IPW for estimating E(Y(d*,M(d*)))"
+		label var sw2_r001 "IPW for estimating E(Y(d,M(d)))"
+		label var sw3_r001 "IPW for estimating E(Y(d,M(d*)))"
+		label var sw4_r001 "IPW for estimating E(Y(d,m))"
+		}
+	
 	/***COMPUTE POINT AND INTERVAL ESTIMATES***/
 	
 	if ("`saving'" != "") {
@@ -48,7 +62,7 @@ program define ipwmed, eclass
 			ipwmedbs `varlist' if `touse', ///
 			dvar(`dvar') mvar(`mvar') cvars(`cvars') ///
 			d(`d') dstar(`dstar') m(`m') sampwts(`sampwts')
-			}
+		}
 
 	if ("`saving'" == "") {
 		bootstrap ATE=r(ate) NDE=r(nde) NIE=r(nie) CDE=r(cde), ///
@@ -57,20 +71,8 @@ program define ipwmed, eclass
 			ipwmedbs `varlist' if `touse', ///
 			dvar(`dvar') mvar(`mvar') cvars(`cvars') ///
 			d(`d') dstar(`dstar') m(`m') sampwts(`sampwts')
-			}
+		}
 			
 	estat bootstrap, p noheader
-	
-	/***REPORT MODELS AND SAVE WEIGHTS IF REQUESTED***/
-	if ("`detail'" != "") {
-			ipwmedbs `varlist' if `touse', ///
-			dvar(`dvar') mvar(`mvar') cvars(`cvars') ///
-			d(`d') dstar(`dstar') m(`m') sampwts(`sampwts') `detail'
-	
-	label var sw1_r001 "IPW for estimating E(Y(d*,M(d*)))"
-	label var sw2_r001 "IPW for estimating E(Y(d,M(d)))"
-	label var sw3_r001 "IPW for estimating E(Y(d,M(d*)))"
-	label var sw4_r001 "IPW for estimating E(Y(d,m))"
-	}
 	
 end ipwmed

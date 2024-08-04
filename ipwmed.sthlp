@@ -6,7 +6,7 @@
 {title:Title}
 
 {p2colset 5 18 18 2}{...}
-{p2col : {cmd:ipwmed} {hline 2}}causal mediation analysis using inverse probability weighting{p_end}
+{p2col : {cmd:ipwmed} {hline 2}}causal mediation analysis using inverse probability weighting {p_end}
 {p2colreset}{...}
 
 
@@ -15,7 +15,7 @@
 {p 8 18 2}
 {cmd:ipwmed} {varname} {ifin}{cmd:,} dvar({varname}) mvar({varname}) 
 d({it:real}) dstar({it:real}) m({it:real}) [cvars({varlist}))
-{reps({it:integer 1000}) strata({varname}) cluster({varname}) level(cilevel) seed({it:passthru})]
+{reps({it:integer}) strata({varname}) cluster({varname}) level(cilevel) seed({it:passthru})]
 
 {phang}{opt varname} - this specifies the outcome variable.
 
@@ -38,7 +38,7 @@ variables need to be coded as a series of dummy variables before being entered a
 
 {phang}{opt weights(varname)} - this option specifies a variable containing sampling weights to include in the analysis.
 
-{phang}{opt reps(integer 200)} - this option specifies the number of replications for bootstrap resampling (the default is 200).
+{phang}{opt reps(integer)} - this option specifies the number of replications for bootstrap resampling (the default is 200).
 
 {phang}{opt strata(varname)} - this option specifies a variable that identifies resampling strata. If this option is specified, 
 then bootstrap samples are taken independently within each stratum.
@@ -95,7 +95,7 @@ University of Chicago{p_end}
 
 {title:References}
 
-{pstd}Wodtke GT, Zhou X, and Elwert F. Causal Mediation Analysis. In preparation. {p_end}
+{pstd}Wodtke, GT and X Zhou. Causal Mediation Analysis. In preparation. {p_end}
 
 {title:Also see}
 
