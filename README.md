@@ -1,6 +1,6 @@
 # ipwmed: Causal Mediation Analysis using Inverse Probability Weighting
 
-`ipwmed` is a stata module to perform causal mediation analysis using inverse probability weighting (IPW). This module is esigned for binary treatment and mediator variables. It constructs a set of IPWs and then uses them to estimate the controlled direct, natural direct, natural indirect, and average total effects.
+`ipwmed` is a Stata module to perform causal mediation analysis using inverse probability weighting (IPW). This module is esigned for binary treatment and mediator variables. It constructs a set of IPWs and then uses them to estimate the controlled direct, natural direct, natural indirect, and average total effects.
 
 ## Syntax
 
