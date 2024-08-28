@@ -15,7 +15,7 @@
 {p 8 18 2}
 {cmd:ipwmed} {varname} {ifin}{cmd:,} dvar({varname}) mvar({varname}) 
 d({it:real}) dstar({it:real}) m({it:real}) [cvars({varlist}))
-{reps({it:integer}) strata({varname}) cluster({varname}) level(cilevel) seed({it:passthru})]
+{reps({it:integer}) strata({varname}) cluster({varname}) level(cilevel) seed({it:passthru}) sampwts({varname}) detail]
 
 {phang}{opt varname} - this specifies the outcome variable.
 
@@ -36,7 +36,7 @@ is evaluated.
 {phang}{opt cvars(varlist)} - this option specifies the list of baseline covariates to be included in the analysis. Categorical 
 variables need to be coded as a series of dummy variables before being entered as covariates.
 
-{phang}{opt weights(varname)} - this option specifies a variable containing sampling weights to include in the analysis.
+{phang}{opt sampwts(varname)} - this option specifies a variable containing sampling weights to include in the analysis.
 
 {phang}{opt reps(integer)} - this option specifies the number of replications for bootstrap resampling (the default is 200).
 
