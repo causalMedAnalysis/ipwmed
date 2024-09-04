@@ -13,28 +13,37 @@
 {title:Syntax}
 
 {p 8 18 2}
-{cmd:ipwmed} {varname} {ifin}{cmd:,} dvar({varname}) mvar({varname}) 
-d({it:real}) dstar({it:real}) m({it:real}) [cvars({varlist}))
-{reps({it:integer}) strata({varname}) cluster({varname}) level(cilevel) seed({it:passthru}) sampwts({varname}) detail]
+{cmd:ipwmed} {depvar} {help indepvars:mvars} {ifin}{cmd:,} 
+{opt dvar(varname)} 
+{opt d(real)} 
+{opt dstar(real})} 
+{opt cvars(varlist)} 
+{opt censor}
+{opt sampwts(varname)} 
+{opt reps(integer)} 
+{opt strata(varname)} 
+{opt cluster(varname)} 
+{opt level(cilevel)} 
+{opt seed(passthru)} 
+{opt detail}
 
-{phang}{opt varname} - this specifies the outcome variable.
+{phang}{opt depvar} - this specifies the outcome variable.
 
-{phang}{opt dvar(varname)} - this specifies the treatment (exposure) variable. This variable must be binary (0/1).
+{phang}{opt mvars} - this specifies the mediator(s), which can be a single variable or multivariate.
 
-{phang}{opt mvar(varname)} - this specifies the mediator variable. This variable must be binary (0/1).
+{phang}{opt dvar(varname)} - this specifies the treatment (exposure) variable, which must be binary and coded 0/1.
 
 {phang}{opt d(real)} - this specifies the reference level of treatment.
 
 {phang}{opt dstar(real)} - this specifies the alternative level of treatment. Together, (d - dstar) defines
 the treatment contrast of interest.
 
-{phang}{opt m(real)} - this specifies the level of the mediator at which the controlled direct effect 
-is evaluated.
-
 {title:Options}
 
 {phang}{opt cvars(varlist)} - this option specifies the list of baseline covariates to be included in the analysis. Categorical 
 variables need to be coded as a series of dummy variables before being entered as covariates.
+
+{phang}{opt censor} - this option specifies that the inverse probability weights are censored at their 1st and 99th percentiles.
 
 {phang}{opt sampwts(varname)} - this option specifies a variable containing sampling weights to include in the analysis.
 
@@ -52,37 +61,43 @@ option is omitted, then the default level of 95% is used.
 {phang}{opt seed(passthru)} - this option specifies the seed for bootstrap resampling. If this option is omitted, then a random 
 seed is used and the results cannot be replicated. {p_end}
 
-{phang}{opt detail} - this option prints the fitted models for the exposure and the mediator; it 
-also saves four variables containing the inverse probability weights used to compute the effect estimates. {p_end}
+{phang}{opt detail} - this option prints the fitted models for the exposure, and it also saves three variables containing 
+the inverse probability weights used to compute the effect estimates. {p_end}
 
 {title:Description}
 
 {pstd}{cmd:ipwmed} performs causal mediation analysis using inverse probability weighting. Two models are 
 estimated to construct the weights: a logit model for the exposure conditional on baseline covariates (if specified)
-and another logit model for the exposure conditional on the mediator and the baseline covariates.
+and another logit model for the exposure conditional on the mediator(s) and the baseline covariates.
 
-{pstd}{cmd:ipwmed} provides estimates of the controlled direct effect, the natural direct effect, the natural indirect effect, 
-and the total effect. It also generates four variables containing the inverse probability weights used to compute
-these effect estimates. {p_end}
+{pstd}If a single mediator is specified, {cmd:ipwmed} provides estimates of the total, natural direct, and natural indirect effects. 
+If multiple mediators are specified, it provides estimates for the total effect and then for the multivariate natural direct and 
+indirect effects operating through the entire set of mediators considered together. {p_end}
 
 {title:Examples}
 
 {pstd}Setup{p_end}
 {phang2}{cmd:. use nlsy79.dta} {p_end}
 
+{pstd} percentile bootstrap CIs with default settings, single mediator: {p_end}
  
-{pstd} percentile bootstrap CIs with default settings: {p_end}
- 
-{phang2}{cmd:. ipwmed std_cesd_age40, dvar(att22) mvar(ever_unemp_age3539) cvars(female black hispan paredu parprof parinc_prank famsize afqt3)	d(1) dstar(0) m(0) reps(1000)} {p_end}
+{phang2}{cmd:. ipwmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) reps(1000)} {p_end}
 
+{pstd} percentile bootstrap CIs with default settings, single mediator, censoring the weights and printing detailed output: {p_end}
+ 
+{phang2}{cmd:. ipwmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) reps(1000) censor detail} {p_end}
+
+{pstd} percentile bootstrap CIs with default settings, multiple mediators, censoring the weights: {p_end}
+ 
+{phang2}{cmd:. ipwmed std_cesd_age40 ever_unemp_age3539 log_faminc_adj_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) reps(1000) censor} {p_end}
+ 
 {title:Saved results}
 
 {pstd}{cmd:ipwmed} saves the following results in {cmd:e()}:
 
 {synoptset 15 tabbed}{...}
 {p2col 5 15 19 2: Matrices}{p_end}
-{synopt:{cmd:e(b)}}matrix containing direct, indirect and total effect estimates{p_end}
-
+{synopt:{cmd:e(b)}}matrix containing total, direct, and indirect effect estimates{p_end}
 
 {title:Author}
 
@@ -91,7 +106,6 @@ Department of Sociology{break}
 University of Chicago{p_end}
 
 {phang}Email: wodtke@uchicago.edu
-
 
 {title:References}
 
