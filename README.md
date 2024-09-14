@@ -24,6 +24,7 @@ ipwmed depvar mvars [if] [in], dvar(varname) d(real) dstar(real) cvars(varlist) 
 - `sampwts(varname)`: Specifies a variable containing sampling weights to include in the analysis.
 - `censor`: Censors the inverse probability weights at their 1st and 99th percentiles.
 - `detail`: Prints the fitted models for the exposure and saves three variables containing the inverse probability weights used to compute the effect estimates.
+- `bootstrap_options`: All `bootstrap` options are available.
 
 ## Description
 
