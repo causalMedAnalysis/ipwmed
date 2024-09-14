@@ -12,16 +12,10 @@ program define ipwmed, eclass
 		dvar(varname numeric) ///
 		d(real) ///
 		dstar(real) ///
-		[cvars(varlist numeric)] ///
-		[sampwts(varname numeric)] ///
-		[reps(integer 200)] ///
-		[strata(varname numeric)] ///
-		[cluster(varname numeric)] ///
-		[level(cilevel)] ///
-		[seed(passthru)] ///
-		[saving(string)] ///
-		[censor] ///
-		[detail]
+		[cvars(varlist numeric) ///
+		sampwts(varname numeric) ///
+		censor ///
+		detail * ]
 
 	qui {
 		marksample touse
@@ -40,7 +34,6 @@ program define ipwmed, eclass
 	
 	local num_mvars = wordcount("`mvars'")
 	
-	/***REPORT MODELS AND SAVE WEIGHTS IF REQUESTED***/
 	if ("`detail'" != "") {
 		
 		local ipw_var_names "sw1_r001 sw2_r001 sw3_r001"
@@ -54,56 +47,34 @@ program define ipwmed, eclass
 			}
 		}
 			
-		ipwmedbs `yvar' `mvars' if `touse', ///
-			dvar(`dvar') cvars(`cvars') ///
-			d(`d') dstar(`dstar') sampwts(`sampwts') `detail' `censor'
+		ipwmedbs `yvar' `mvars' if `touse', dvar(`dvar') d(`d') dstar(`dstar') ///
+			cvars(`cvars') sampwts(`sampwts') `detail' `censor'
 	
 		label var sw1_r001 "IPW for estimating E(Y(d*,M(d*)))"
 		label var sw2_r001 "IPW for estimating E(Y(d,M(d)))"
 		label var sw3_r001 "IPW for estimating E(Y(d,M(d*)))"
 	}
 
-	/***COMPUTE POINT AND INTERVAL ESTIMATES***/
 	if (`num_mvars'==1) {
 	
-		if ("`saving'" != "") {
-			bootstrap ATE=r(ate) NDE=r(nde) NIE=r(nie), ///
-				reps(`reps') strata(`strata') cluster(`cluster') level(`level') `seed' ///
-				saving(`saving', replace) noheader notable: ///
-					ipwmedbs `yvar' `mvars' if `touse', ///
-					dvar(`dvar') cvars(`cvars') d(`d') dstar(`dstar') ///
-					sampwts(`sampwts') `censor'
-		}
-
-		if ("`saving'" == "") {
-			bootstrap ATE=r(ate) NDE=r(nde) NIE=r(nie), ///
-				reps(`reps') strata(`strata') cluster(`cluster') level(`level') `seed' ///
-				noheader notable: ///
-					ipwmedbs `yvar' `mvars' if `touse', ///
-					dvar(`dvar') cvars(`cvars') d(`d') dstar(`dstar') ///
-					sampwts(`sampwts') `censor'
-		}
+		bootstrap ///
+			ATE=r(ate) ///
+			NDE=r(nde) ///
+			NIE=r(nie), ///
+				`options' noheader notable: ///
+					ipwmedbs `yvar' `mvars' if `touse', dvar(`dvar') d(`d') dstar(`dstar') ///
+						cvars(`cvars') sampwts(`sampwts') `censor'
 	}
 
 	if (`num_mvars'>=2) {
 	
-		if ("`saving'" != "") {
-			bootstrap ATE=r(ate) MNDE=r(nde) MNIE=r(nie), ///
-				reps(`reps') strata(`strata') cluster(`cluster') level(`level') `seed' ///
-				saving(`saving', replace) noheader notable: ///
-					ipwmedbs `yvar' `mvars' if `touse', ///
-					dvar(`dvar') cvars(`cvars') d(`d') dstar(`dstar') ///
-					sampwts(`sampwts') `censor'
-		}
-
-		if ("`saving'" == "") {
-			bootstrap ATE=r(ate) MNDE=r(nde) MNIE=r(nie), ///
-				reps(`reps') strata(`strata') cluster(`cluster') level(`level') `seed' ///
-				noheader notable: ///
-					ipwmedbs `yvar' `mvars' if `touse', ///
-					dvar(`dvar') cvars(`cvars') d(`d') dstar(`dstar') ///
-					sampwts(`sampwts') `censor'
-		}
+		bootstrap ///
+			ATE=r(ate) ///
+			MNDE=r(nde) ///
+			MNIE=r(nie), ///
+				`options' noheader notable: ///
+					ipwmedbs `yvar' `mvars' if `touse', dvar(`dvar') d(`d') dstar(`dstar') ///
+						cvars(`cvars') sampwts(`sampwts') `censor'
 	}
 	
 	estat bootstrap, p noheader
