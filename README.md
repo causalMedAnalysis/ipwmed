@@ -34,6 +34,8 @@ It estimates two models to construct the weights: a logit model for the exposure
 
 Using these weights, `ipwmed` estimates the total, natural direct, and natural indirect effects when a single mediator is specified. When multiple mediators are specified, it provides estimates for the total effect and the multivariate natural direct and indirect effects operating through the entire set of mediators.
 
+`ipwmed` allows sampling weights via the `sampwts` option, but it does not internally rescale them for use with the bootstrap. If using weights from a complex sample design that require rescaling to produce valid boostrap estimates, the user must be sure to appropriately specify the `strata`, `cluster`, and `size` options from the `bootstrap` command so that Nc-1 clusters are sampled within from each stratum, where Nc denotes the number of clusters per stratum. Failure to properly adjust the bootstrap sampling to account for a complex sample design that requires weighting could lead to invalid inferential statistics.
+
 ## Examples
 
 ### Example 1: Single mediator with default settings
