@@ -14,7 +14,7 @@ program define ipwmedbs, rclass
 		dstar(real) ///
 		[cvars(varlist numeric)] ///
 		[sampwts(varname numeric)] ///
-		[censor] ///
+		[censor(numlist min=2 max=2)] ///
 		[detail]
 	
 	qui {
@@ -61,7 +61,7 @@ program define ipwmedbs, rclass
 	
 	if ("`censor'"!="") {
 		foreach i of var `sw1' `sw2' `sw3' {
-			qui centile `i' if `i'!=. & `touse', c(1 99) 
+			qui centile `i' if `i'!=. & `touse', c(`censor') 
 			qui replace `i'=r(c_1) if `i'<r(c_1) & `i'!=. & `touse'
 			qui replace `i'=r(c_2) if `i'>r(c_2) & `i'!=. & `touse'
 		}
