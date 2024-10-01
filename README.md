@@ -22,7 +22,7 @@ ipwmed depvar mvars [if] [in], dvar(varname) d(real) dstar(real) cvars(varlist) 
 
 - `cvars(varlist)`: Specifies the list of baseline covariates to be included in the analysis. Categorical variables need to be coded as a series of dummy variables before being entered as covariates.
 - `sampwts(varname)`: Specifies a variable containing sampling weights to include in the analysis.
-- `censor`: Censors the inverse probability weights at their 1st and 99th percentiles.
+- `censor(numlist)`: Censors the inverse probability weights at the percentiles provided in `numlist`.
 - `detail`: Prints the fitted models for the exposure and saves three variables containing the inverse probability weights used to compute the effect estimates.
 - `bootstrap_options`: All `bootstrap` options are available.
 
@@ -48,13 +48,13 @@ ipwmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan 
 ### Example 2: Single mediator with censored weights, detailed output, and 1000 bootstrap replications
 
 ```stata
-ipwmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) reps(1000) censor detail reps(1000)
+ipwmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) reps(1000) censor(1 99) detail reps(1000)
 ```
 
 ### Example 3: Multiple mediators with censored weights and 1000 bootstrap replications
 
 ```stata
-ipwmed std_cesd_age40 ever_unemp_age3539 log_faminc_adj_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) censor reps(1000)
+ipwmed std_cesd_age40 ever_unemp_age3539 log_faminc_adj_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) censor(1 99) reps(1000)
 ```
 
 ## Saved Results
